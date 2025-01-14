@@ -1,8 +1,8 @@
 # LMS
 
 ## Creators
-- [AEfeCoban](https://github.com/aefecoban) | Backend & Frontend & DB
-- [MEgeCoban](https://github.com/megecoban/) | Backend & Frontend & DB
+- [AEfeCoban](https://github.com/aefecoban) | Frontend & Backend & DB
+- [MEgeCoban](https://github.com/megecoban/) | Frontend & Backend & DB
 
 ## Technologies
 - Node.JS
