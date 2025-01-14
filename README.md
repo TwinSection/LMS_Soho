@@ -22,4 +22,3 @@
 ### BackEnd & Database
 - For BackEnd: backend.md
 - For Database: database.md
-- For FrontEnd: frontend.md
