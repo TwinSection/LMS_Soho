@@ -1,8 +1,8 @@
 # LMS
 
 ## Creators
-- AEfeCoban (Backend & Frontend)
-- MEgeCoban (Backend & Frontend)
+- [AEfeCoban](https://github.com/aefecoban) | Backend & Frontend & DB
+- [MEgeCoban](https://github.com/megecoban/) | Backend & Frontend & DB
 
 ## Technologies
 - Node.JS
@@ -11,7 +11,6 @@
 - - KoaJS
 - - MongoDB
 - - Mongoose
-- - 
 
 ### Features
 
@@ -20,5 +19,5 @@
 
 
 ### BackEnd & Database
-- For BackEnd: backend.md
-- For Database: database.md
+- For BackEnd: [backend.md](https://github.com/TwinSection/LMS_Soho/blob/main/backend.md)
+- For Database: [database.md](https://github.com/TwinSection/LMS_Soho/blob/main/database.md)
