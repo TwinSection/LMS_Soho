@@ -6,11 +6,12 @@
 
 ## Technologies
 - Node.JS
-- - React
-- - React-Bootstrap
-- - KoaJS
-- - MongoDB
-- - Mongoose
+  - React
+  - React-Bootstrap
+  - KoaJS
+  - Mongoose
+- MongoDB
+
 
 ### Features
 
