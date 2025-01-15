@@ -38,35 +38,61 @@ export default function CourseEditAndNew() {
     useEffect(() => {
         if (!IsNewCoursePage && params.id) {
             FetchQuery.Admin.GetCourses(undefined, params.id).then((x) => {
-                console.log(x);
-                setCourse(x.data[0])
-                setCurrentLessons(x.data[0].LessonList)
+                console.log("getcourse", x);
+                setCourse(x.data[0]);
+                setCurrentLessons(x.data[0].LessonList);
+            })
+        }else{
+            FetchQuery.Admin.GetUsers(undefined).then((x) => {
+                const egitmenler = x.data.filter(user => user.Role === "Egitmen");
+                if(course.Instructor?._id == null && egitmenler.length > 0){
+                    course.Instructor = {
+                        _id : egitmenler[0]._id
+                    }
+                }
+                return egitmenler;
+            }).then((egitmenler) => {
+                FetchQuery.Admin.GetCategories(undefined).then((x) => {
+                    console.log("course", course);
+                    if(course.Category?._id == null && x.data.length > 0){
+                        course.Category = {
+                            _id : x.data[0]._id
+                        }
+                        setCourse(course);
+                    }
+                    setAllCategories(x.data)
+                    setAllInstructor(egitmenler);
+                })
             });
         }
-
-        FetchQuery.Admin.GetUsers(undefined).then((x) => {
-            const egitmenler = x.data.filter(user => user.Role === "Egitmen");
-            if(course.Instructor?._id == null && egitmenler.length > 0){
-                course.Instructor = {
-                    _id : egitmenler[0]._id
-                }
-            }
-            return egitmenler;
-        }).then((egitmenler) => {
-            FetchQuery.Admin.GetCategories(undefined).then((x) => {
-                console.log("course", course);
-                if(course.Category?._id == null && x.data.length > 0){
-                    course.Category = {
-                        _id : x.data[0]._id
-                    }
-                    setCourse(course);
-                }
-                setAllCategories(x.data)
-                setAllInstructor(egitmenler);
-            })
-        }); 
-
     }, []);
+
+    useEffect(() => {
+
+        if(!IsNewCoursePage && params.id){
+            FetchQuery.Admin.GetUsers(undefined).then((x) => {
+                const egitmenler = x.data.filter(user => user.Role === "Egitmen");
+                if(course.Instructor?._id == null && egitmenler.length > 0){
+                    course.Instructor = {
+                        _id : egitmenler[0]._id
+                    }
+                }
+                return egitmenler;
+            }).then((egitmenler) => {
+                FetchQuery.Admin.GetCategories(undefined).then((x) => {
+                    if(course.Category?._id == null && x.data.length > 0){
+                        course.Category = {
+                            _id : x.data[0]._id
+                        }
+                        setCourse(course);
+                    }
+                    setAllCategories(x.data)
+                    setAllInstructor(egitmenler);
+                })
+            }); 
+        }
+
+    }, [course]);
 
     let [lessonRows, setLessonRows] = useState([]);
 

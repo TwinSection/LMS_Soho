@@ -68,6 +68,10 @@ export default {
             let url = (id == undefined) ? ConstValues.Admin.GetSubPlansURL : ConstValues.Admin.GetSubPlansURL.replace(":id", id);
             return MakeRequest(HTTPMethods.GET, url, SetDefaultHeaders(token));
         },
+        DelSubPlan : (token, id) => {
+            let URL = ConstValues.Admin.DeleteSubPlanURL.replace(":id", id);
+            return MakeRequest(HTTPMethods.DELETE, URL, SetDefaultHeaders(token));
+        },
         GetNotifications : (token, id = undefined) => {
             let url = (id == undefined) ? ConstValues.Admin.GetNotificationsURL : ConstValues.Admin.GetNotificationURL.replace(":id", id);
             return MakeRequest(HTTPMethods.GET, url, SetDefaultHeaders(token));

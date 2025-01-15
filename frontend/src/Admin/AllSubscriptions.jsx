@@ -21,8 +21,15 @@ export default function AllSubscriptions() {
                 setDatas(x.data);
             }
         });
-
     }, []);
+
+    function DeleteSub(data){
+        FetchQuery.Admin.DelSubPlan(undefined, data._id).then((x) => {
+            nav(0);
+        }).catch((error) => {
+            console.log(error);
+        })
+    }
 
     return <>
         {
@@ -72,7 +79,8 @@ export default function AllSubscriptions() {
                                             <td><Button variant="danger"
                                                 onClick={(e) => {
                                                     e.preventDefault();
-                                                    let link = AdminPages.Courses + "/" + item._id;
+                                                    let link = AdminPages.Subscriptions + "/";
+                                                    DeleteSub(item);
                                                     nav(link);
                                                 }}
                                             >Sil</Button></td>
