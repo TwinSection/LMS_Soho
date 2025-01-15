@@ -1,4 +1,5 @@
 const Koa = require("koa");
+const serve = require("koa-static");
 const Router = require("koa-router");
 const BodyParser = require("koa-bodyparser");
 const AdminRoute = require("./Routes/AdminRoute");
@@ -6,18 +7,46 @@ const InstructorRoute = require("./Routes/InstructorRoute");
 const APIRoute = require("./Routes/APIRoute");
 const Database = require("./Database/Database")
 const cors = require("@koa/cors");
+const path = require('path');
+const fs = require('fs');
 
 module.exports = class Application{
 
     constructor(){
         this.app = new Koa();
         this.parser = new BodyParser();
-        this.db = new Database();
+        const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/defaultDB";
+        console.log("Debug mongo ",MONGODB_URI)
+        this.db = new Database(MONGODB_URI);
 
         this.port = 9090;
 
         this.app.use(this.parser);
-        this.app.use(cors());
+
+        
+        this.app.use(cors({
+          origin: process.env.REACT_APP_API_URL,
+          allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+          allowHeaders: ['Content-Type', 'Authorization', 'X-Content-Type-Options', 'Accept', 'X-Requested-With', 'Origin', 'Access-Control-Request-Method', 'Access-Control-Request-Headers'],
+          credentials: true,
+          maxAge: 7200,
+          privateNetworkAccess: true,
+        }));
+
+        this.app.use(async (ctx, next) => {
+          if (ctx.method === 'OPTIONS') {
+            ctx.set('Access-Control-Allow-Origin', process.env.REACT_APP_API_URL);
+            ctx.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+            ctx.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+            ctx.set('Access-Control-Allow-Credentials', 'true');
+            ctx.status = 204; // No Content
+            return;
+          }
+          await next();
+        });
+
+        this.staticPath = path.join(__dirname, 'dist');
+        this.app.use(serve(this.staticPath));
 
         this.Router = new Router();
 
@@ -34,16 +63,19 @@ module.exports = class Application{
         });
     }
 
-    Start(){
-        this.db.Start();
+    async Start(){
+        await this.db.Start();
+        console.log("Veritabanı ve modeller yüklendi.");
 
-        this.app.use((ctx, next) => {
-            ctx.set("Access-Control-Allow-Origin", "*");
-            ctx.set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-            ctx.db = this.db;
-            return next();
-        })
-
+        this.app.use(cors({
+          origin: process.env.REACT_APP_API_URL,
+          allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+          allowHeaders: ['Content-Type', 'Authorization', 'X-Content-Type-Options', 'Accept', 'X-Requested-With', 'Origin', 'Access-Control-Request-Method', 'Access-Control-Request-Headers'],
+          credentials: true,
+          maxAge: 7200,
+          privateNetworkAccess: true,
+        }));
+        
         this.Route();
         this.Listen();
     }
@@ -125,9 +157,25 @@ module.exports = class Application{
         this.APIRouter.get("/auth/getprofile", (ctx) => APIRoute.GetUserInfo(ctx));
         this.APIRouter.put("/auth/profile", (ctx) => APIRoute.ModifyUser(ctx));
         // Kullanıcı
+
+        this.app.use(async (ctx, next) => {
+            if (ctx.method === 'GET' && ctx.path !== '/api') {
+                const indexPath = path.join(this.staticPath, 'index.html');
+                console.log(indexPath);
         
-        this.Router.get("/home", (ctx) => {})
-        this.Router.get("/", (ctx) => {})
+                const stream = fs.createReadStream(indexPath);
+        
+                stream.on('error', (err) => {
+                    console.log(err);
+                    ctx.status = 404;
+                    ctx.body = '404 Not Found';
+                });
+        
+                ctx.body = stream;
+            } else {
+                await next();
+            }
+        });   
     }
 
     Listen(){
