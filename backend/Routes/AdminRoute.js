@@ -715,7 +715,7 @@ module.exports = {
 
         try{
 
-            let subData = id == undefined ? await sub.find({}) : await sub.find({_id : id})
+            let subData = id == undefined ? await sub.find({IsDeleted : false}) : await sub.find({_id : id})
 
             return ctx.body = {
                 status : 1,
@@ -735,12 +735,13 @@ module.exports = {
          * @type {import('../Database/Database')}
          */
         const db = ctx.db;
-
         let sub = db.Models["Subscription"];
 
-
+        let { PlanName, Price, DurationDays } = ctx.request.body;
         try {
-            let subData = await sub.find({PlanName : PlanName})
+            let subData = await sub.findOne({PlanName : PlanName})
+
+            console.log(subData);
 
             if(subData)
             {
@@ -750,14 +751,13 @@ module.exports = {
                 }
             }
         }catch(err) {
-            console.log(error);
+            console.log(err);
             return ctx.body = {
                 status : 0,
                 message : "Plan oluşturulamadı. Bir hata oluştu."
             }
         }
 
-        let { PlanName, Price, DurationDays } = ctx.request.body;
 
         if ( !PlanName || Price===undefined || DurationDays===undefined ) {
             return ctx.body = {
@@ -853,7 +853,7 @@ module.exports = {
          * @type {import('../Database/Database')}
          */
         const db = ctx.db;
-        const { ID } = ctx.request.body;
+        let ID = ctx.params.id;
     
         let sub = db.Models["Subscription"];
     
