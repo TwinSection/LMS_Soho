@@ -18,7 +18,7 @@ module.exports = class Application {
         //const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/defaultDB";
         this.db = new Database("mongodb+srv://root:242324@cluster0.djrdn.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
 
-        this.port = 9090;
+        this.port = 80;
 
         this.app.use(this.parser);
         this.app.use(cors({
