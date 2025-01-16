@@ -1,4 +1,5 @@
-const URL = process.env.REACT_APP_API_URL || "http://localhost:9090/";
+//const URL = process.env.REACT_APP_API_URL || "http://localhost:9090/";
+const URL = "http://208.87.101.119/";
 
 export default {
     URL : URL,
