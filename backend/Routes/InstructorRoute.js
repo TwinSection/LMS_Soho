@@ -3,12 +3,6 @@ const { HashMyPassword } = require("../utils/PasswordManagment");
 const { default: mongoose } = require("mongoose");
 const SecretKey = require("./APIRoute").SecretKey;
 
-// TEST EDİLECEK
-/*
-"success" = 1
-"error" = 0
-*/
-
 module.exports = {
 
     InstructorMiddleWare : async (ctx, next) => {
